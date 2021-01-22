@@ -1,4 +1,4 @@
-
+from math import atan2, pi, degrees
 
 class Vector(object):
     # from https://stackoverflow.com/questions/57065080/draw-perpendicular-line-of-fixed-length-at-a-point-of-another-line
@@ -33,6 +33,13 @@ class Vector(object):
 
     def as_int_tuple(self):
         return (int(round(self.x)), int(round(self.y)))
+
+    def angle_with_x_axis(self, other):
+        diff = other - self
+        rad = atan2(diff.y, diff.x)
+        if rad < 0:
+            rad += 2*pi
+        return degrees(rad)
 
     def __mul__(self, scalar):
         return Vector(self.x * scalar, self.y * scalar)
