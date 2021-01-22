@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='cania-utils',
-      version='0.2',
+      version='0.2.2',
       description='All utils for Cancer Image Analysis python package',
       long_description='',
       classifiers=[

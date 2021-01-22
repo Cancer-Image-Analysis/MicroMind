@@ -58,7 +58,10 @@ class Disk(object):
     def ls(self, regex='*'):
         return self.location.glob(regex)
 
-    def save_as_csv(self, dictionary, filename):
+    def save_as_csv(self, data, filename):
         filepath = self.location / filename
-        df = pd.DataFrame(data=dictionary)
+        if isinstance(data, dict):
+            df = pd.DataFrame(data=dictionary)
+        elif isinstance(data, pd.DataFrame):
+            df = data
         df.to_csv(str(filepath))
