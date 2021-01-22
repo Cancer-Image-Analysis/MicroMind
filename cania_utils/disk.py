@@ -61,7 +61,7 @@ class Disk(object):
     def save_as_csv(self, data, filename):
         filepath = self.location / filename
         if isinstance(data, dict):
-            df = pd.DataFrame(data=dictionary)
+            df = pd.DataFrame(data=data)
         elif isinstance(data, pd.DataFrame):
             df = data
         df.to_csv(str(filepath))
