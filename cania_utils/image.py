@@ -60,6 +60,10 @@ def bgr2hsv(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 
+def hsv2rgb(img):
+    return cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
+
+
 def rgb2bgr(img):
     return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
