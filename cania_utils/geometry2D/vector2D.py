@@ -1,5 +1,6 @@
 from math import atan2, pi, degrees
 
+
 class Vector(object):
     # from https://stackoverflow.com/questions/57065080/draw-perpendicular-line-of-fixed-length-at-a-point-of-another-line
     def __init__(self, x, y):

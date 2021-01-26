@@ -143,6 +143,25 @@ def intersection_with_line(mask, line):
     return centroid
 
 
+def extract_rectangle_area(image, center, theta, width, height):
+
+    '''
+    Rotates OpenCV image around center with angle theta (in deg)
+    then crops the image according to width and height.
+    '''
+    shape = (image.shape[1], image.shape[0])
+
+    matrix = cv2.getRotationMatrix2D(center=center, angle=theta, scale=1)
+    image = cv2.warpAffine(src=image, M=matrix, dsize=shape)
+
+    x = int(center[0] - width/2)
+    y = int(center[1] - height/2)
+
+    image = image[y:y+height, x:x+width]
+
+    return image
+
+
 def imfill(image):
     # https://www.learnopencv.com/filling-holes-in-an-image-using-opencv-python-c/
     im_floodfill = image.copy()
