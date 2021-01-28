@@ -126,9 +126,10 @@ def mean_in_mask(image, mask):
     return np.mean(only_positive_values)
 
 
-def split_mask_with_line(mask, line):
+def split_mask_with_lines(mask, lines):
     line_mask = imnew(mask.shape)
-    line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
+    for line in lines:
+        line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
     splitted_mask = cv2.bitwise_and(mask, cv2.bitwise_not(line_mask))
     contours, _ = cv2.findContours(splitted_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     submasks = []
@@ -142,7 +143,6 @@ def split_mask_with_line(mask, line):
         submasks.append(imfill(submask))
         centroids.append(Vector(x_centroid, y_centroid))
     return submasks, centroids
-
 
 def intersection_with_line(mask, line):
     line_mask = imnew(mask.shape)
