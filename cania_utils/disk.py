@@ -23,7 +23,7 @@ class Disk(object):
         extension = filepath.suffix
         filepath = str(filepath)
         if extension == PNG:
-            return imwrite(filepath, filedata)
+            imwrite(filepath, filedata)
 
     def read(self, filename):
         filepath = self.location / filename
