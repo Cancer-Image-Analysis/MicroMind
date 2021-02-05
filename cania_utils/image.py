@@ -88,9 +88,9 @@ def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color='same'):
     overlayed = cv2.addWeighted(img_layer, alpha, out, 1 - alpha, 0, out)
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     if border_color == 'same':
-        cv2.drawContours(overlayed, contours, -1, color, 2)
+        cv2.drawContours(overlayed, contours, -1, color, 1)
     elif border_color is not None:
-        cv2.drawContours(overlayed, contours, -1, border_color, 2)
+        cv2.drawContours(overlayed, contours, -1, border_color, 1)
     return overlayed
 
 
