@@ -2,7 +2,7 @@ from pathlib import Path
 import zipfile
 import pandas as pd
 
-from cania_utils.image import imread_color, imread_tiff, imwrite
+from cania_utils.image import imread_color, imread_tiff, imwrite, imread_czi, imwrite_tiff
 
 PNG = '.png'
 JPG = '.jpg'
@@ -10,6 +10,7 @@ CSV = '.csv'
 TIF = '.tif'
 ZIP = '.zip'
 LSM = '.lsm'
+CZI = '.czi'
 
 
 class Disk(object):
@@ -24,6 +25,8 @@ class Disk(object):
         filepath = str(filepath)
         if extension == PNG:
             imwrite(filepath, filedata)
+        if extension == TIF or extension == LSM:
+            imwrite_tiff(filepath, filedata)
 
     def read(self, filename):
         filepath = self.location / filename
@@ -35,6 +38,8 @@ class Disk(object):
             return pd.read_csv(filepath)
         if extension == TIF or extension == LSM:
             return imread_tiff(filepath)
+        if extension == CZI:
+            return imread_czi(filepath)
 
     def unzip(self, filename):
         filepath = self.location / filename
