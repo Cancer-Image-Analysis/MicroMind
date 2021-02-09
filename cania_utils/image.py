@@ -1,4 +1,5 @@
 import tifffile
+import czifile
 import cv2
 import numpy as np
 
@@ -27,6 +28,10 @@ def imread_lsm(filename):
 
 def imread_tiff(filename):
     return tifffile.imread(filename)
+
+
+def imread_czi(filename):
+    return czifile.imread(filename)
 
 
 """ write images """
