@@ -149,6 +149,7 @@ def split_mask_with_lines(mask, lines):
         centroids.append(Vector(x_centroid, y_centroid))
     return submasks, centroids
 
+
 def intersection_with_line(mask, line):
     line_mask = imnew(mask.shape)
     line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
