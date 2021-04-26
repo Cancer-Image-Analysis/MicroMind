@@ -105,6 +105,12 @@ def fill_ellipses(mask, ellipses):
     return mask
 
 
+def fill_ellipses_as_labels(mask, ellipses):
+    for i, ellipse in enumerate(ellipses):
+        cv2.ellipse(mask, ellipse, i+1, thickness=-1)
+    return mask
+
+
 """ operations """
 
 
@@ -148,6 +154,7 @@ def split_mask_with_lines(mask, lines):
         submasks.append(imfill(submask))
         centroids.append(Vector(x_centroid, y_centroid))
     return submasks, centroids
+
 
 def intersection_with_line(mask, line):
     line_mask = imnew(mask.shape)
@@ -201,12 +208,27 @@ def imfill(image):
     mask = imnew((h+2, w+2))
 
     # Floodfill from point (0, 0)
-    cv2.floodFill(im_floodfill, mask, (0, 0), BINARY_FILL_COLOR)
+    if image[0, 0] == 0:
+        seed = (0, 0)
+        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
+    elif image[0, -1] == 0:
+        seed = (0, image.shape[0] - 1)
+        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
+
+    elif image[-1, 0] == 0:
+        seed = (image.shape[1] - 1, 0)
+        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
+
+    elif image[-1, -1] == 0:
+        seed = (image.shape[1] - 1, image.shape[0] - 1)
+        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
+
+    else:
+        print('imfill will fail, no corner can be filled!')
 
     # Invert floodfilled image
     im_floodfill_inv = cv2.bitwise_not(im_floodfill)
 
     # Combine the two images to get the foreground.
     im_out = image | im_floodfill_inv
-
     return im_out
