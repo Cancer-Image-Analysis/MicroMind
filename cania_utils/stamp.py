@@ -11,4 +11,4 @@ def uuid():
 
 
 def eventid():
-    return f'{timestamp()}-{uuid()}'
+    return f'{timestamp()}-{uuid()}'.replace(' ', '-')
