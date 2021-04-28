@@ -224,7 +224,8 @@ def imfill(image):
         cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
 
     else:
-        print('imfill will fail, no corner can be filled!')
+        # print('imfill will fail, no corner can be filled!')
+        return image
 
     # Invert floodfilled image
     im_floodfill_inv = cv2.bitwise_not(im_floodfill)
