@@ -233,3 +233,8 @@ def imfill(image):
     # Combine the two images to get the foreground.
     im_out = image | im_floodfill_inv
     return im_out
+
+
+def contours(image):
+    cnts, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    return cnts
