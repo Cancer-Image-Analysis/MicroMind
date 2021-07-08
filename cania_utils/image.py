@@ -85,23 +85,44 @@ def split_channels(image):
 """ draw on images """
 
 
+def contours(image, exclude_holes=True):
+    mode = cv2.RETR_LIST
+    method = cv2.CHAIN_APPROX_SIMPLE
+    if exclude_holes:
+        mode = cv2.RETR_EXTERNAL
+    return cv2.findContours(image.copy(), mode, method)[0]
+
+
+def fill_contours(image, cnts, color=[255, 255, 0]):
+    return cv2.drawContours(image.copy(), cnts, -1, color, -1)
+
+
+def draw_contours(image, cnts, thickness=2, color=[0, 255, 255]):
+    return cv2.drawContours(image.copy(), cnts, -1, color, thickness)
+
+
+def imfill(image):
+    cnts = contours(image, exclude_holes=True)
+    return fill_contours(image, cnts, color=BINARY_FILL_COLOR)
+
+
 def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color='same'):
     # Ref: http://www.pyimagesearch.com/2016/03/07/transparent-overlays-with-opencv/
     out = image.copy()
     img_layer = image.copy()
     img_layer[np.where(mask)] = color
     overlayed = cv2.addWeighted(img_layer, alpha, out, 1 - alpha, 0, out)
-    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = contours(mask, exclude_holes=True)
     if border_color == 'same':
-        cv2.drawContours(overlayed, contours, -1, color, 1)
+        draw_contours(image, cnts, thickness=1, color=color)
     elif border_color is not None:
-        cv2.drawContours(overlayed, contours, -1, border_color, 1)
+        draw_contours(image, cnts, thickness=1, color=border_color)
     return overlayed
 
 
-def fill_ellipses(mask, ellipses):
+def fill_ellipses(mask, ellipses, color=BINARY_FILL_COLOR):
     for ellipse in ellipses:
-        cv2.ellipse(mask, ellipse, BINARY_FILL_COLOR, thickness=-1)
+        cv2.ellipse(mask, ellipse, color, thickness=-1)
     return mask
 
 
@@ -180,7 +201,6 @@ def max_over_line(image, line):
 
 
 def extract_rectangle_area(image, center, theta, width, height):
-
     '''
     Rotates OpenCV image around center with angle theta (in deg)
     then crops the image according to width and height.
@@ -196,45 +216,3 @@ def extract_rectangle_area(image, center, theta, width, height):
     image = image[y:y+height, x:x+width]
 
     return image
-
-
-def imfill(image):
-    # https://www.learnopencv.com/filling-holes-in-an-image-using-opencv-python-c/
-    im_floodfill = image.copy()
-
-    # Mask used to flood filling.
-    # Notice the size needs to be 2 pixels than the image.
-    h, w = image.shape[:2]
-    mask = imnew((h+2, w+2))
-
-    # Floodfill from point (0, 0)
-    if image[0, 0] == 0:
-        seed = (0, 0)
-        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
-    elif image[0, -1] == 0:
-        seed = (0, image.shape[0] - 1)
-        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
-
-    elif image[-1, 0] == 0:
-        seed = (image.shape[1] - 1, 0)
-        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
-
-    elif image[-1, -1] == 0:
-        seed = (image.shape[1] - 1, image.shape[0] - 1)
-        cv2.floodFill(im_floodfill, mask, seed, BINARY_FILL_COLOR)
-
-    else:
-        # print('imfill will fail, no corner can be filled!')
-        return image
-
-    # Invert floodfilled image
-    im_floodfill_inv = cv2.bitwise_not(im_floodfill)
-
-    # Combine the two images to get the foreground.
-    im_out = image | im_floodfill_inv
-    return im_out
-
-
-def contours(image):
-    cnts, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    return cnts
