@@ -75,6 +75,10 @@ def gray2rgb(image):
     return cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
 
+def rgb2gray(image):
+    return cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+
 """ channels """
 
 
@@ -93,12 +97,12 @@ def contours(image, exclude_holes=True):
     return cv2.findContours(image.copy(), mode, method)[0]
 
 
-def fill_contours(image, cnts, color=[255, 255, 0]):
-    return cv2.drawContours(image.copy(), cnts, -1, color, -1)
+def fill_contours(image, cnts, color=[255, 255, 0], cnt_index=-1):
+    return cv2.drawContours(image.copy(), cnts, cnt_index, color, -1)
 
 
-def draw_contours(image, cnts, thickness=2, color=[0, 255, 255]):
-    return cv2.drawContours(image.copy(), cnts, -1, color, thickness)
+def draw_contours(image, cnts, thickness=2, color=[0, 255, 255], cnt_index=-1):
+    return cv2.drawContours(image.copy(), cnts, cnt_index, color, thickness)
 
 
 def imfill(image):
