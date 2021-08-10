@@ -1,2 +1,2 @@
-# cania-utils
-All utils necessary for Cancer Image Analysis
+# MicroMind
+All utils et basics for Microscopy Medical Image Analysis
