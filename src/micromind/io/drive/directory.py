@@ -2,6 +2,9 @@ from pathlib import Path
 import zipfile
 import pandas as pd
 
+from abc import ABC
+from dataclasses import dataclass, field, InitVar
+
 from micromind.io.image import (imread_color, imread_tiff, imread_czi,
                                 imwrite, imwrite_tiff)
 
@@ -14,18 +17,31 @@ LSM = '.lsm'
 CZI = '.czi'
 
 
-class DriveObject(Path):
-    def __init__(self, path):
-        super().__init__(path)
+@dataclass
+class DriveEntity(ABC):
+    path: InitVar[str]
+    _path: Path = field(init=False)
+
+    def __post_init__(self, path):
+        self._path = Path(path)
+
+    def __getattr__(self, attr):
+        return getattr(self._path, attr)
+
+    def __truediv__(self, key):
+        return self._path / key
 
 
-class Directory(DriveObject):
-    def __init__(self, path):
-        super().__init__(path)
+@dataclass
+class Directory(DriveEntity):
+    def __post_init__(self, path):
+        super().__post_init__(path)
         if not self.exists():
-            raise ValueError(f'The directory {self} does not exist!')
+            _err = f'The directory {self._path} does not exist!'
+            raise ValueError(_err)
         if not self.is_dir():
-            raise ValueError(f'The path {self} is not pointing to a directory!')
+            _err = f'The path {self._path} is not pointing to a directory!'
+            raise ValueError(_err)
 
     def write(self, filename, filedata):
         filepath = self / filename
@@ -80,7 +96,11 @@ class Directory(DriveObject):
         df.to_csv(str(filepath))
 
 
-class File(DriveObject):
+class WorkingDirectory(Directory):
+    pass
+
+
+class File(DriveEntity):
     def __init__(self, path):
         super().__init__(path)
         if not self.exists():
