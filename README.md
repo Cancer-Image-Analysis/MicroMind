@@ -1,3 +1,7 @@
+![PyPI](https://img.shields.io/pypi/v/micromind)
+![PyPI - License](https://img.shields.io/pypi/l/micromind)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/micromind)
+
 # MicroMind
 All utils and basics for Microscopy Medical Image Analysis as a single package
 
