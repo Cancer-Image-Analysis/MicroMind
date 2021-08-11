@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import rc
 
-from cania_utils.image import contours, draw_contours
+from micromind.cv.image import contours, draw_contours
 
 
 rc('font', **{'size': 6})
