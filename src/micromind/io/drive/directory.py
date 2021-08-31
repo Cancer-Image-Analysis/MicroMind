@@ -54,6 +54,12 @@ class Directory(DriveEntity):
 
     def read(self, filename):
         filepath = self / filename
+        if not filepath.exists():
+            _err = f'The file {filepath} does not exist!'
+            raise ValueError(_err)
+        if not filepath.is_file():
+            _err = f'The path {filepath} is not pointing to a file!'
+            raise ValueError(_err)
         extension = filepath.suffix
         filepath = str(filepath)
         if extension == PNG or extension == JPG:
