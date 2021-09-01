@@ -1,8 +1,24 @@
-from micromind.cv.image import mean_value
+from micromind.cv.image import mean_value, mean_over_line
 import numpy as np
 
 
 class TestMeanValue:
+    def test_line(self):
+        w = 5
+        h = 5
+        image = np.zeros((h, w), dtype=np.uint8)
+        image[2, 1:4] = 1
+        line = [[0, 0], [0, 4]]
+        res = mean_over_line(image, line, thickness=1)
+        assert res == 0
+
+        line = [[2, 0], [2, 4]]
+        res = mean_over_line(image, line, thickness=1)
+        assert res == 3 / 15
+
+        res = mean_over_line(image, line, thickness=3)
+        assert res == 3 / 25
+
     def test_zero(self):
         w = 5
         h = 5

@@ -124,9 +124,9 @@ def intersection_with_line(mask, line):
     return centroid
 
 
-def mean_over_line(image, line):
+def mean_over_line(image, line, thickness=2):
     line_mask = imnew(image.shape)
-    line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
+    line_mask = cv2.line(line_mask, line[0], line[1], 255, thickness)
     return mean_value(image, mask=line_mask)
 
 
