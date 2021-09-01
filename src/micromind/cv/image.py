@@ -36,7 +36,6 @@ def imfill(image):
 
 
 def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color='same'):
-    # Ref: http://www.pyimagesearch.com/2016/03/07/transparent-overlays-with-opencv/
     out = image.copy()
     img_layer = image.copy()
     img_layer[np.where(mask)] = color
@@ -81,10 +80,18 @@ def max_in_mask(image, mask):
     return np.max(only_positive_values)
 
 
-def mean_in_mask(image, mask):
-    image_on_mask = cv2.bitwise_and(image, image, mask=mask)
-    only_positive_values = image_on_mask[np.argwhere(image_on_mask)]
-    return np.mean(only_positive_values)
+def mean_value(image, mask=None, threshold=None):
+    if mask is None and threshold is None:
+        return np.mean(image)
+    if mask is not None and threshold is None:
+        return np.mean(image, where=mask > 0)
+    if mask is None and threshold is not None:
+        mask = image >= threshold
+        if np.all(mask == 0):
+            return None
+        return np.mean(image, where=mask)
+    mask[image < threshold] = 0
+    return np.mean(image, where=mask > 0)
 
 
 def split_mask_with_lines(mask, lines):
@@ -92,12 +99,12 @@ def split_mask_with_lines(mask, lines):
     for line in lines:
         line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
     splitted_mask = cv2.bitwise_and(mask, cv2.bitwise_not(line_mask))
-    contours, _ = cv2.findContours(splitted_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = contours(splitted_mask)
     submasks = []
     centroids = []
-    for i, c in enumerate(contours):
+    for i, c in enumerate(cnts):
         submask = imnew(mask.shape)
-        cv2.drawContours(submask, contours, i, 1, 2)
+        cv2.drawContours(submask, cnts, i, 1, 2)
         M = cv2.moments(c)
         x_centroid = round(M['m10'] / M['m00'])
         y_centroid = round(M['m01'] / M['m00'])
@@ -109,9 +116,9 @@ def split_mask_with_lines(mask, lines):
 def intersection_with_line(mask, line):
     line_mask = imnew(mask.shape)
     line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
-    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = contours(mask)
     mask_cnt = imnew(mask.shape)
-    cv2.drawContours(mask_cnt, contours, -1, BINARY_FILL_COLOR, 2)
+    cv2.drawContours(mask_cnt, cnts, -1, BINARY_FILL_COLOR, 2)
     intersection = cv2.bitwise_and(line_mask, mask_cnt)
     centroid = np.mean(np.argwhere(intersection), axis=0)
     return centroid
@@ -120,7 +127,7 @@ def intersection_with_line(mask, line):
 def mean_over_line(image, line):
     line_mask = imnew(image.shape)
     line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
-    return mean_in_mask(image, line_mask)
+    return mean_value(image, mask=line_mask)
 
 
 def max_over_line(image, line):
