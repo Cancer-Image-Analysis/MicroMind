@@ -23,10 +23,10 @@ class Vector2(object):
     def __mul__(self, scalar: float) -> Vector2:
         return Vector2(self.x * scalar, self.y * scalar)
 
-    def dot(self, other: Vector2) -> Vector2:
+    def dot(self, other: Vector2) -> float:
         return self.x * other.x + self.y * other.y
 
-    def norm(self) -> Vector2:
+    def norm(self) -> float:
         return self.dot(self)**0.5
 
     def normalized(self) -> Vector2:
@@ -40,7 +40,7 @@ class Vector2(object):
         return Vector2(1, -self.x / self.y)
 
     def as_tuple(self) -> Tuple[float, float]:
-        return astuple(self)
+        return (self.x, self.y)
 
     def as_int_tuple(self) -> Tuple[int, int]:
         return (int(round(self.x)), int(round(self.y)))
