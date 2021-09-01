@@ -29,6 +29,7 @@ def get_object_size(obj, seen=None):
         size += sum([get_object_size(k, seen) for k in obj.keys()])
     elif hasattr(obj, '__dict__'):
         size += get_object_size(obj.__dict__, seen)
-    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
-        size += sum([get_object_size(i, seen) for i in obj])
+    elif hasattr(obj, '__iter__'):
+        if not isinstance(obj, (str, bytes, bytearray)):
+            size += sum([get_object_size(i, seen) for i in obj])
     return size
