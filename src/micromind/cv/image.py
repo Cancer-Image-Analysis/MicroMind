@@ -97,7 +97,7 @@ def mean_value(image, mask=None, threshold=None):
 def split_mask_with_lines(mask, lines):
     line_mask = imnew(mask.shape)
     for line in lines:
-        line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
+        line_mask = cv2.line(line_mask, line.pt1.as_int_tuple(), line.pt2.as_int_tuple(), BINARY_FILL_COLOR, 2)
     splitted_mask = cv2.bitwise_and(mask, cv2.bitwise_not(line_mask))
     cnts = contours(splitted_mask)
     submasks = []
@@ -106,8 +106,12 @@ def split_mask_with_lines(mask, lines):
         submask = imnew(mask.shape)
         cv2.drawContours(submask, cnts, i, 1, 2)
         M = cv2.moments(c)
-        x_centroid = round(M['m10'] / M['m00'])
-        y_centroid = round(M['m01'] / M['m00'])
+        if M['m00'] == 0:
+            x_centroid = 0
+            y_centroid = 0
+        else:
+            x_centroid = round(M['m10'] / M['m00'])
+            y_centroid = round(M['m01'] / M['m00'])
         submasks.append(imfill(submask))
         centroids.append(Vector2(x_centroid, y_centroid))
     return submasks, centroids
