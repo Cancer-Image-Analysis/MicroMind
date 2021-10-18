@@ -140,7 +140,7 @@ def max_over_line(image, line):
     return max_in_mask(image, line_mask)
 
 
-def extract_rectangle_area(image, center, theta, width, height):
+def extract_rectangle_area(image, center, theta, width, height, flags=cv2.INTER_LINEAR):
     '''
     Rotates OpenCV image around center with angle theta (in deg)
     then crops the image according to width and height.
@@ -148,11 +148,10 @@ def extract_rectangle_area(image, center, theta, width, height):
     shape = (image.shape[1], image.shape[0])
 
     matrix = cv2.getRotationMatrix2D(center=center, angle=theta, scale=1)
-    image = cv2.warpAffine(src=image, M=matrix, dsize=shape)
+    image = cv2.warpAffine(src=image, M=matrix, dsize=shape, flags=flags)
 
-    x = int(center[0] - width/2)
-    y = int(center[1] - height/2)
-
+    x = max(0, int(center[0] - width/2))
+    y = max(0, int(center[1] - height/2))
     image = image[y:y+height, x:x+width]
 
     return image
