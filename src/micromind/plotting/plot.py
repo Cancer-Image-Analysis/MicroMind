@@ -27,3 +27,26 @@ def plot_predictions(original, prediction, contours_color=[255, 255, 0]):
     ax.imshow(borders)
     ax.set_title("contours")
     ax.axis('off')
+
+
+def plot_watershed(original, mask, markers, watershed):
+    fig = plt.figure(figsize=(12, 12))
+    ax = fig.add_subplot(2, 2, 1)
+    ax.imshow(original)
+    ax.set_title("Original Image")
+    ax.axis('off')
+
+    ax = fig.add_subplot(2, 2, 2)
+    ax.imshow(mask, cmap="viridis")
+    ax.set_title("Mask")
+    ax.axis('off')
+
+    ax = fig.add_subplot(2, 2, 3)
+    ax.imshow(markers, cmap="viridis")
+    ax.set_title("Markers")
+    ax.axis('off')
+
+    ax = fig.add_subplot(2, 2, 4)
+    ax.imshow(watershed, cmap="viridis")
+    ax.set_title("Watershed")
+    ax.axis('off')
