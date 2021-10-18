@@ -34,7 +34,7 @@ class Cell2D(Vector2):
         cnts = contours(cell_mask)
         if len(cnts) == 1:
             cnt = cnts[0]
-            if len(cnt) > 4:
+            if len(cnt) >= 4:
                 M = cv2.moments(cnt)
                 cx = int(M['m10']/M['m00'])
                 cy = int(M['m01']/M['m00'])
