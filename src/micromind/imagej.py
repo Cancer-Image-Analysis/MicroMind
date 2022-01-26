@@ -1,3 +1,5 @@
+from roifile import ImagejRoi
+
 
 def read_ellipses_from_csv(dataframe, scale=1., ellipse_scale=1.):
     ellipses = []
@@ -13,3 +15,9 @@ def read_ellipse_from_row(row, scale=1., ellipse_scale=1.):
     size = (row.Major*scale*ellipse_scale, row.Minor*scale*ellipse_scale)
     ellipse_info = (position, size, angle)
     return ellipse_info
+
+
+def read_polygons_from_roi(filename, scale=1.):
+    rois = ImagejRoi.fromfile(filename)
+    polygons = [roi.coordinates() for roi in rois]
+    return polygons
