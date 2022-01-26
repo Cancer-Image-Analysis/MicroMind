@@ -27,7 +27,7 @@ def fill_contours(image, cnts, color=[255, 255, 0], cnt_index=-1):
 
 
 def draw_contours(image, cnts, thickness=2, color=[0, 255, 255], cnt_index=-1):
-    return cv2.drawContours(image.copy(), cnts, cnt_index, color, thickness)
+    return cv2.drawContours(image, cnts, cnt_index, color, thickness)
 
 
 def imfill(image):
@@ -42,9 +42,9 @@ def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color='same'):
     overlayed = cv2.addWeighted(img_layer, alpha, out, 1 - alpha, 0, out)
     cnts = contours(mask, exclude_holes=True)
     if border_color == 'same':
-        draw_contours(image, cnts, thickness=1, color=color)
+        draw_contours(overlayed, cnts, thickness=1, color=color)
     elif border_color is not None:
-        draw_contours(image, cnts, thickness=1, color=border_color)
+        draw_contours(overlayed, cnts, thickness=1, color=border_color)
     return overlayed
 
 
@@ -57,6 +57,16 @@ def fill_ellipses(mask, ellipses, color=BINARY_FILL_COLOR):
 def fill_ellipses_as_labels(mask, ellipses):
     for i, ellipse in enumerate(ellipses):
         cv2.ellipse(mask, ellipse, i+1, thickness=-1)
+    return mask
+
+
+def fill_polygons(mask, polygons, color=BINARY_FILL_COLOR):
+    return cv2.fillPoly(mask, pts=polygons, color=color)
+
+
+def fill_polygons_as_labels(mask, polygons):
+    for i, polygon in enumerate(polygons):
+        cv2.fillPoly(mask, pts=np.int32([polygon]), color=i+1)
     return mask
 
 
