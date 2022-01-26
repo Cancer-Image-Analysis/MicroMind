@@ -1,8 +1,11 @@
 from micromind.cv.image import intersection_with_line
+from micromind.microcell.cell import MicroObject
 
+import cv2
 
-class Synapse:
-    def __init__(self, cell_1, cell_2):
+class Synapse(MicroObject):
+    def __init__(self, cell_1, cell_2, custom_data={}):
+        super().__init__(custom_data)
         self.cell_1 = cell_1
         self.cell_2 = cell_2
 
@@ -17,3 +20,12 @@ class Synapse:
     def front_cell_1(self):
         line = [self.cell_1.as_int_tuple(), self.cell_2.as_int_tuple()]
         return intersection_with_line(self.cell_1.mask, line)
+
+    def crop(self, padding=5):
+        synapse_mask = self.cell_1.mask | self.cell_2.mask
+        x, y, w, h = cv2.boundingRect(synapse_mask)
+        x = max(x-padding, 0)
+        y = max(y-padding, 0)
+        w = w + padding * 2
+        h = h + padding * 2
+        return x, y, w, h
