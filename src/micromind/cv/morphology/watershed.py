@@ -8,9 +8,13 @@ class WatershedTransform:
     def __init__(self, backend='skimage'):
         self._backend = backend
 
-    def apply(self, mask, markers, image_color=None):
+    def apply(self, mask, markers, image_color=None, use_distance_transform=False):
         markers[mask == 0] = 0
         markers = cv2.connectedComponents(markers, connectivity=8)[1]
+
+        if use_distance_transform:
+            mask = cv2.distanceTransform(mask, distanceType=cv2.DIST_L2, maskSize=5)
+
         if self._backend == 'opencv':
             return self._cv_transform(mask, markers, image_color=image_color)
         elif self._backend == 'skimage':
