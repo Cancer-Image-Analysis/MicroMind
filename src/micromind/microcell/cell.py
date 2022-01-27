@@ -1,7 +1,8 @@
-from micromind.geometry.vector import Vector2
-from micromind.cv.image import contours, fill_contours
-import numpy as np
 import cv2
+import numpy as np
+
+from micromind.cv.image import contours, fill_contours
+from micromind.geometry.vector import Vector2
 
 
 class MicroObject:

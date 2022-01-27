@@ -3,7 +3,6 @@ from matplotlib import rc
 
 from micromind.cv.image import contours, draw_contours
 
-
 rc("font", **{"size": 6})
 
 

@@ -1,17 +1,16 @@
-import numpy as np
-import cv2
 from enum import Enum
+from typing import List
 
+import cv2
+import numpy as np
+from cania.slides.regions import ScannerRegionData, SlideRegion
+from cania.slides.slides import GenericSlide
 from cania.slides.stainings import (
-    StainingIntensityRange,
     ConfigurableStainingIntensityRange,
     GenericStaining,
+    StainingIntensityRange,
 )
-from cania.slides.slides import GenericSlide
-from cania.slides.regions import ScannerRegionData, SlideRegion
-
-from typing import List
-from cania_utils.image import rgb2bgr, bgr2hsv
+from cania_utils.image import bgr2hsv, rgb2bgr
 
 
 class ColorFilterHSV(object):

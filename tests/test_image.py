@@ -1,5 +1,6 @@
-from micromind.cv.image import mean_value, mean_over_line
 import numpy as np
+
+from micromind.cv.image import mean_over_line, mean_value
 
 
 class TestMeanValue:

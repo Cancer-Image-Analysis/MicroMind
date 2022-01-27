@@ -1,7 +1,8 @@
-import matplotlib.pyplot as plt
 from dataclasses import dataclass
-from typing import List
 from math import pi
+from typing import List
+
+import matplotlib.pyplot as plt
 
 
 @dataclass

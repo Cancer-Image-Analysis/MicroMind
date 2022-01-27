@@ -1,6 +1,6 @@
-import tifffile
-import czifile
 import cv2
+import czifile
+import tifffile
 
 
 def imread_color(filename):

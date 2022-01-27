@@ -1,7 +1,8 @@
+import time
+
 import cv2
 import numpy as np
 from skimage.segmentation import watershed
-import time
 
 
 class WatershedTransform:

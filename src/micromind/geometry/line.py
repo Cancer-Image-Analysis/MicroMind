@@ -1,7 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict, astuple
+
+from dataclasses import asdict, astuple, dataclass
+from math import atan2, degrees, pi
 from typing import ClassVar, Tuple
-from math import atan2, pi, degrees
+
 from micromind.geometry.vector import Vector2
 
 

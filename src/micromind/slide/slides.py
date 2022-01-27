@@ -1,12 +1,12 @@
+from abc import ABC
 from pathlib import Path
 
+import numpy as np
 from openslide import open_slide
 
-from micromind.cv.conversion import rgb2bgr, bgr2hsv
+from micromind.cv.conversion import bgr2hsv, rgb2bgr
 from micromind.slide.exceptions import EmptySlideIdError
 from micromind.slide.regions import ScannerRegionData, SlideRegion
-from abc import ABC
-import numpy as np
 
 
 class SlideFactory(object):

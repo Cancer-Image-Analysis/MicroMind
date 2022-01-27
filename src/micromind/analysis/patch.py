@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 import numpy as np
 
 from micromind.cv.conversion import rgb2bgr

@@ -1,7 +1,7 @@
+import cv2
+
 from micromind.cv.image import intersection_with_line
 from micromind.microcell.cell import MicroObject
-
-import cv2
 
 
 class Synapse(MicroObject):
