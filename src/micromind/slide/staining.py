@@ -16,11 +16,11 @@ class StainingColor:
         return self.hsv_max
 
 
-BLACK = StainingColor((0,  0,   0),   (180, 255, 100))
-ORANGE = StainingColor((15,  120, 100), (40,  255, 255))
+BLACK = StainingColor((0, 0, 0), (180, 255, 100))
+ORANGE = StainingColor((15, 120, 100), (40, 255, 255))
 PURPLE = StainingColor((110, 60, 70), (160, 255, 255))
-BLUE = StainingColor((85, 80,  120), (110, 255, 255))
-BROWN = StainingColor((0,   100, 0),   (15,  255, 255))
+BLUE = StainingColor((85, 80, 120), (110, 255, 255))
+BROWN = StainingColor((0, 100, 0), (15, 255, 255))
 
 
 class StainingABC(ABC):
@@ -38,10 +38,10 @@ class StainingIHC(StainingABC):
         return cv2.inRange(image, self.hsv_min, self.hsv_max)
 
 
-CD107A = StainingIHC('CD107a', BLACK.min, BLACK.max)
-SOX10 = StainingIHC('Sox10', ORANGE.min, ORANGE.max)
-CD8 = StainingIHC('CD8', PURPLE.min, PURPLE.max)
-DAPI = StainingIHC('BLUE', BLUE.min, BLUE.max)
+CD107A = StainingIHC("CD107a", BLACK.min, BLACK.max)
+SOX10 = StainingIHC("Sox10", ORANGE.min, ORANGE.max)
+CD8 = StainingIHC("CD8", PURPLE.min, PURPLE.max)
+DAPI = StainingIHC("BLUE", BLUE.min, BLUE.max)
 
 
 class ConfocalStaining(StainingABC):
@@ -72,7 +72,6 @@ class ConfigurableStainingIntensityRange(StainingIntensityRange):
 
     def set_max(self, max_range: tuple):
         self._max = max_range
-
 
 
 # FM4_64 = ConfocalStaining('FM4-64')

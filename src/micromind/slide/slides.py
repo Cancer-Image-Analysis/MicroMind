@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 from openslide import open_slide
@@ -19,9 +18,9 @@ class SlideFactory(object):
             raise FileNotFoundError
 
         extension = slide_file.suffix
-        if extension in ['.mrxs', '.tif']:
+        if extension in [".mrxs", ".tif"]:
             slide = open_slide(slide_path)
-        elif extension in ['.czi']:
+        elif extension in [".czi"]:
             slide = czifile.imread(slide_path)
         else:
             raise FileNotFoundError
@@ -58,8 +57,8 @@ class SlideIHC(SlideABC):
         bgr = rgb2bgr(slide_region.get_image())
         hsv = bgr2hsv(bgr)
         stainings = dict()
-        stainings['bgr'] = bgr
-        stainings['hsv'] = hsv
+        stainings["bgr"] = bgr
+        stainings["hsv"] = hsv
         for staining_name in self.stainings.keys():
             stainings[staining_name] = self.stainings[staining_name].get_mask(hsv)
         return stainings

@@ -35,13 +35,13 @@ def imfill(image):
     return fill_contours(image, cnts, color=BINARY_FILL_COLOR)
 
 
-def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color='same'):
+def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color="same"):
     out = image.copy()
     img_layer = image.copy()
     img_layer[np.where(mask)] = color
     overlayed = cv2.addWeighted(img_layer, alpha, out, 1 - alpha, 0, out)
     cnts = contours(mask, exclude_holes=True)
-    if border_color == 'same':
+    if border_color == "same":
         draw_contours(overlayed, cnts, thickness=1, color=color)
     elif border_color is not None:
         draw_contours(overlayed, cnts, thickness=1, color=border_color)
@@ -56,7 +56,7 @@ def fill_ellipses(mask, ellipses, color=BINARY_FILL_COLOR):
 
 def fill_ellipses_as_labels(mask, ellipses):
     for i, ellipse in enumerate(ellipses):
-        cv2.ellipse(mask, ellipse, i+1, thickness=-1)
+        cv2.ellipse(mask, ellipse, i + 1, thickness=-1)
     return mask
 
 
@@ -66,7 +66,7 @@ def fill_polygons(mask, polygons, color=BINARY_FILL_COLOR):
 
 def fill_polygons_as_labels(mask, polygons):
     for i, polygon in enumerate(polygons):
-        cv2.fillPoly(mask, pts=np.int32([polygon]), color=i+1)
+        cv2.fillPoly(mask, pts=np.int32([polygon]), color=i + 1)
     return mask
 
 
@@ -86,7 +86,7 @@ def max_in_mask(image, mask):
     image_on_mask = cv2.bitwise_and(image, image, mask=mask)
     only_positive_values = image_on_mask[np.argwhere(image_on_mask)]
     if len(only_positive_values) == 0:
-        return 0.
+        return 0.0
     return np.max(only_positive_values)
 
 
@@ -107,7 +107,13 @@ def mean_value(image, mask=None, threshold=None):
 def split_mask_with_lines(mask, lines):
     line_mask = imnew(mask.shape)
     for line in lines:
-        line_mask = cv2.line(line_mask, line.pt1.as_int_tuple(), line.pt2.as_int_tuple(), BINARY_FILL_COLOR, 2)
+        line_mask = cv2.line(
+            line_mask,
+            line.pt1.as_int_tuple(),
+            line.pt2.as_int_tuple(),
+            BINARY_FILL_COLOR,
+            2,
+        )
     splitted_mask = cv2.bitwise_and(mask, cv2.bitwise_not(line_mask))
     cnts = contours(splitted_mask)
     submasks = []
@@ -116,12 +122,12 @@ def split_mask_with_lines(mask, lines):
         submask = imnew(mask.shape)
         cv2.drawContours(submask, cnts, i, 1, 2)
         M = cv2.moments(c)
-        if M['m00'] == 0:
+        if M["m00"] == 0:
             x_centroid = 0
             y_centroid = 0
         else:
-            x_centroid = round(M['m10'] / M['m00'])
-            y_centroid = round(M['m01'] / M['m00'])
+            x_centroid = round(M["m10"] / M["m00"])
+            y_centroid = round(M["m01"] / M["m00"])
         submasks.append(imfill(submask))
         centroids.append(Vector2(x_centroid, y_centroid))
     return submasks, centroids
@@ -151,17 +157,17 @@ def max_over_line(image, line):
 
 
 def extract_rectangle_area(image, center, theta, width, height, flags=cv2.INTER_LINEAR):
-    '''
+    """
     Rotates OpenCV image around center with angle theta (in deg)
     then crops the image according to width and height.
-    '''
+    """
     shape = (image.shape[1], image.shape[0])
 
     matrix = cv2.getRotationMatrix2D(center=center, angle=theta, scale=1)
     image = cv2.warpAffine(src=image, M=matrix, dsize=shape, flags=flags)
 
-    x = max(0, int(center[0] - width/2))
-    y = max(0, int(center[1] - height/2))
-    image = image[y:y+height, x:x+width]
+    x = max(0, int(center[0] - width / 2))
+    y = max(0, int(center[1] - height / 2))
+    image = image[y : y + height, x : x + width]
 
     return image

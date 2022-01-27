@@ -17,12 +17,13 @@ class Patient(object):
     def __init__(self, data_path):
         self.data_path = data_path
 
+
 class ChromogenicCohort(object):
     def __init__(self, metadata):
         self.metadata = metadata
         self.patients = {}
         self.setup()
-        
+
     def setup(self):
         for index, row in self.metadata.iterrows():
             slide_path = row.PATH

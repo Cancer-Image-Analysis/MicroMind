@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import List
 from math import pi
 
+
 @dataclass
 class Figure:
     title: str = None
@@ -12,7 +13,9 @@ class Figure:
     hspace: float = 0.25
 
     def create_panels(self, nrows=2, ncols=2):
-        self.__fig, self.panels = plt.subplots(nrows=nrows, ncols=ncols, figsize=self.size, dpi=self.dpi)
+        self.__fig, self.panels = plt.subplots(
+            nrows=nrows, ncols=ncols, figsize=self.size, dpi=self.dpi
+        )
         if self.title:
             self.__fig.suptitle(self.title)
         self.__fig.set_facecolor(self.background_color)
@@ -24,7 +27,7 @@ class Figure:
 
     def set_projection(self, n, projection):
         self.panels[n].remove()
-        self.panels[n] = self.__fig.add_subplot(3, 2, n+1, projection=projection)
+        self.panels[n] = self.__fig.add_subplot(3, 2, n + 1, projection=projection)
 
     def save(self, filename):
         self.__fig.savefig(filename)
@@ -40,7 +43,9 @@ class FigureSinglePanel:
     background_color: tuple = (1, 1, 1)
 
     def __post_init__(self):
-        self.__fig, self.panel = plt.subplots(nrows=1, ncols=1, figsize=self.size, dpi=self.dpi)
+        self.__fig, self.panel = plt.subplots(
+            nrows=1, ncols=1, figsize=self.size, dpi=self.dpi
+        )
         if self.title:
             self.__fig.suptitle(self.title)
         if self.xlabel:
@@ -54,7 +59,7 @@ class FigureSinglePanel:
 
     def set_projection(self, n, projection):
         self.panels[n].remove()
-        self.panels[n] = self.__fig.add_subplot(3, 2, n+1, projection=projection)
+        self.panels[n] = self.__fig.add_subplot(3, 2, n + 1, projection=projection)
 
     def save(self, filename):
         self.__fig.savefig(filename)
@@ -64,14 +69,14 @@ class FigureSinglePanel:
 class FigureSingleImage(FigureSinglePanel):
     def __post_init__(self):
         super().__post_init__()
-        self.panel.axis('off')
+        self.panel.axis("off")
 
     def get_panel(self):
         return self.panel
 
     def set_projection(self, n, projection):
         self.panels[n].remove()
-        self.panels[n] = self.__fig.add_subplot(3, 2, n+1, projection=projection)
+        self.panels[n] = self.__fig.add_subplot(3, 2, n + 1, projection=projection)
 
     def save(self, filename):
         self.__fig.savefig(filename)
@@ -79,9 +84,14 @@ class FigureSingleImage(FigureSinglePanel):
 
 @dataclass
 class FigureSinglePolar(FigureSinglePanel):
-
     def __post_init__(self):
-        self.__fig, self.panel = plt.subplots(nrows=1, ncols=1, figsize=self.size, dpi=self.dpi, subplot_kw={'projection': 'polar'})
+        self.__fig, self.panel = plt.subplots(
+            nrows=1,
+            ncols=1,
+            figsize=self.size,
+            dpi=self.dpi,
+            subplot_kw={"projection": "polar"},
+        )
         N = len(self.xlabel)
         # If you want the first axis to be on top:
         self.panel.set_theta_offset(pi / 2)
@@ -99,7 +109,7 @@ class FigureSinglePolar(FigureSinglePanel):
         if self.xlabel:
             self.panel.set_xticks(self.angles[:-1], minor=False)
             self.panel.set_xticklabels(self.xlabel, fontdict=None, minor=False)
-        self.panel.plot(self.angles, [0] * (N+1), linewidth=0)
+        self.panel.plot(self.angles, [0] * (N + 1), linewidth=0)
         self.__fig.set_facecolor(self.background_color)
 
     def get_panel(self):

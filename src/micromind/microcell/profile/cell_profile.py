@@ -3,7 +3,7 @@ import itertools
 
 
 class CellStainingProfile:
-    def __init__(self, channels, names, threshold=0, sep=' '):
+    def __init__(self, channels, names, threshold=0, sep=" "):
         self.channels = channels
         self.names = names
         self.threshold = threshold
@@ -15,11 +15,17 @@ class CellStainingProfile:
         inside_cell = cell.mask > 0
         labels = []
         profile = []
-        channels = {name: stainings[:, channel] for channel, name in zip(self.channels, self.names)}
+        channels = {
+            name: stainings[:, channel]
+            for channel, name in zip(self.channels, self.names)
+        }
         channels_true = {}
         channels_false = {}
         for name, channel in channels.items():
-            z_stack = [np.logical_and.reduce([z > self.threshold, inside_cell]) for z in channel]
+            z_stack = [
+                np.logical_and.reduce([z > self.threshold, inside_cell])
+                for z in channel
+            ]
             channels_true[name] = z_stack
             channels_false[name] = np.bitwise_not(z_stack)
 
@@ -34,9 +40,9 @@ class CellStainingProfile:
                     combination_names.append(name)
                     combination_values.append(channels_true[name])
                 else:
-                    combination_values.append(channels_false[name])            
+                    combination_values.append(channels_false[name])
             s = np.count_nonzero(np.logical_and.reduce(combination_values))
-            labels.append(f' {self.sep} '.join(combination_names))
+            labels.append(f" {self.sep} ".join(combination_names))
             profile.append(s)
 
         return profile, labels

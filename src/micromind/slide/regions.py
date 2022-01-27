@@ -10,7 +10,9 @@ class SlideRegionData(object):
 
 
 class MicroscopeRegionData(SlideRegionData):
-    def __init__(self, x: int, y: int, width: int, height: int, tile_x: int, tile_y: int, z: int):
+    def __init__(
+        self, x: int, y: int, width: int, height: int, tile_x: int, tile_y: int, z: int
+    ):
         super().__init__(x, y, width, height)
         self.tile_x = tile_x
         self.tile_y = tile_y
@@ -24,7 +26,16 @@ class ScannerRegionData(SlideRegionData):
 
 
 class MergedChannelsRegionData(SlideRegionData):
-    def __init__(self, x: int, y: int, width: int, height: int, channel_1: int, channel_2: int, channel_3: int):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        channel_1: int,
+        channel_2: int,
+        channel_3: int,
+    ):
         super().__init__(x, y, width, height)
         self.channel_1 = channel_1
         self.channel_2 = channel_2

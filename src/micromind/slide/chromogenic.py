@@ -2,7 +2,11 @@ import numpy as np
 import cv2
 from enum import Enum
 
-from cania.slides.stainings import StainingIntensityRange, ConfigurableStainingIntensityRange, GenericStaining
+from cania.slides.stainings import (
+    StainingIntensityRange,
+    ConfigurableStainingIntensityRange,
+    GenericStaining,
+)
 from cania.slides.slides import GenericSlide
 from cania.slides.regions import ScannerRegionData, SlideRegion
 
@@ -10,21 +14,22 @@ from typing import List
 from cania_utils.image import rgb2bgr, bgr2hsv
 
 
-
-
-
 class ColorFilterHSV(object):
     def __init__(self, hsv_range: StainingIntensityRange):
         self.hsv_range = hsv_range
 
     def get_mask(self, hsv_image) -> np.ndarray:
-        mask = cv2.inRange(hsv_image, self.hsv_range.get_min(), self.hsv_range.get_max())
+        mask = cv2.inRange(
+            hsv_image, self.hsv_range.get_min(), self.hsv_range.get_max()
+        )
         return mask
 
 
 class ConfigurableColorFilterHSV(ColorFilterHSV):
     def __init__(self):
-        super(ConfigurableColorFilterHSV, self).__init__(ConfigurableStainingIntensityRange((0, 0, 0), (180, 255, 255)))
+        super(ConfigurableColorFilterHSV, self).__init__(
+            ConfigurableStainingIntensityRange((0, 0, 0), (180, 255, 255))
+        )
 
 
 class ChromogenicStaining(GenericStaining):
@@ -50,7 +55,7 @@ class CompositeStaining(GenericStaining):
 
 
 class ConfigurableChromogenicStaining(ChromogenicStaining):
-    def __init__(self, name='configurable'):
+    def __init__(self, name="configurable"):
         super().__init__(ConfigurableColorFilterHSV(), name)
 
     def configure(self, min_range, max_range):
@@ -64,21 +69,25 @@ class ConfigurableChromogenicSlide(ChromogenicSlide):
         self.add_staining(ConfigurableChromogenicStaining())
 
     def configure(self, min_range, max_range):
-        self.stainings['configurable'].configure(min_range, max_range)
+        self.stainings["configurable"].configure(min_range, max_range)
 
 
 class StainingColor(Enum):
-    BLACK  = StainingIntensityRange((0,  0,   0),   (180, 255, 100))
-    ORANGE = StainingIntensityRange((15,  120, 100), (40,  255, 255))
+    BLACK = StainingIntensityRange((0, 0, 0), (180, 255, 100))
+    ORANGE = StainingIntensityRange((15, 120, 100), (40, 255, 255))
     PURPLE = StainingIntensityRange((110, 60, 70), (160, 255, 255))
-    BLUE   = StainingIntensityRange((85, 80,  120), (110, 255, 255))
-    BROWN  = StainingIntensityRange((0,   100, 0),   (15,  255, 255))
+    BLUE = StainingIntensityRange((85, 80, 120), (110, 255, 255))
+    BROWN = StainingIntensityRange((0, 100, 0), (15, 255, 255))
 
 
-LAMP1    = ChromogenicStaining(ColorFilterHSV(StainingColor.BLACK.value), 'LAMP1')
-CD107A   = ChromogenicStaining(ColorFilterHSV(StainingColor.BLACK.value), 'CD107a')
-SOX10    = ChromogenicStaining(ColorFilterHSV(StainingColor.ORANGE.value), 'Sox10')
-CD8      = ChromogenicStaining(ColorFilterHSV(StainingColor.PURPLE.value), 'CD8')
-BLUE     = ChromogenicStaining(ColorFilterHSV(StainingColor.BLUE.value), 'BLUE')
-MELANINE = ChromogenicStaining(ColorFilterHSV(StainingColor.BROWN.value), 'Melanine')
-CD107a   = CompositeStaining(ColorFilterHSV(StainingColor.BLACK.value), [SOX10.color_filter, CD8.color_filter, BLUE.color_filter, MELANINE.color_filter], 'CD107a')
+LAMP1 = ChromogenicStaining(ColorFilterHSV(StainingColor.BLACK.value), "LAMP1")
+CD107A = ChromogenicStaining(ColorFilterHSV(StainingColor.BLACK.value), "CD107a")
+SOX10 = ChromogenicStaining(ColorFilterHSV(StainingColor.ORANGE.value), "Sox10")
+CD8 = ChromogenicStaining(ColorFilterHSV(StainingColor.PURPLE.value), "CD8")
+BLUE = ChromogenicStaining(ColorFilterHSV(StainingColor.BLUE.value), "BLUE")
+MELANINE = ChromogenicStaining(ColorFilterHSV(StainingColor.BROWN.value), "Melanine")
+CD107a = CompositeStaining(
+    ColorFilterHSV(StainingColor.BLACK.value),
+    [SOX10.color_filter, CD8.color_filter, BLUE.color_filter, MELANINE.color_filter],
+    "CD107a",
+)

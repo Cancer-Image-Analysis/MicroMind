@@ -16,9 +16,11 @@ class Line2:
     RIGHT: ClassVar[Line2]
 
     @staticmethod
-    def from_point(point: Vector2, angle: float, size: float, centered: bool = False) -> Line2:
+    def from_point(
+        point: Vector2, angle: float, size: float, centered: bool = False
+    ) -> Line2:
         angle_rad = radians(angle)
-        angle_rad_inv = radians(angle-180)
+        angle_rad_inv = radians(angle - 180)
         if centered:
             size = size / 2
             point_1 = point + Vector2(cos(angle_rad_inv), sin(angle_rad_inv)) * size

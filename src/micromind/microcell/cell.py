@@ -53,8 +53,8 @@ class Cell2D(Vector2, MicroObject):
                 M = cv2.moments(cnt)
                 if M["m00"] == 0:
                     return None
-                cx = int(M['m10']/M['m00'])
-                cy = int(M['m01']/M['m00'])
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
                 mask = fill_contours(mask, [cnt], color=255)
 
                 if area_range is not None:

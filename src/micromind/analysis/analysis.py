@@ -33,13 +33,13 @@ class Cohort(InputData):
 
 
 class AnalysisCV(object):
-    '''
-    '''
+    """ """
+
     def __init__(self, procedure):
         self.procedure = procedure
 
     def run(self, input_data):
-        print('running analysis !!')
+        print("running analysis !!")
 
         all_results = {}
 
@@ -47,5 +47,5 @@ class AnalysisCV(object):
             result = self.procedure.run(filepath, name)
             results_df = pd.DataFrame(result, columns=result[0].keys())
             all_results[name] = results_df
-            results_df.to_csv(name + '.csv')
+            results_df.to_csv(name + ".csv")
         return all_results

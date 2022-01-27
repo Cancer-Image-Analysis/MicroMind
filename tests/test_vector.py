@@ -69,7 +69,7 @@ class TestVector2:
 
     def test_str(self):
         vector_str = str(VECTOR_1)
-        assert vector_str == '(5, 2)'
+        assert vector_str == "(5, 2)"
 
     def test_repr(self):
         vector_repr = repr(VECTOR_1)

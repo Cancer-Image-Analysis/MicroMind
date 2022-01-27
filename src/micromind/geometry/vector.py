@@ -27,14 +27,14 @@ class Vector2(object):
         return self.x * other.x + self.y * other.y
 
     def norm(self) -> float:
-        return self.dot(self)**0.5
+        return self.dot(self) ** 0.5
 
     def normalized(self) -> Vector2:
         norm = self.norm()
         return Vector2(self.x / norm, self.y / norm)
 
     def distance(self, other: Vector2) -> float:
-        return ((self.x - other.x)**2 + (self.y - other.y)**2)**0.5
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
 
     def perp(self) -> Vector2:
         return Vector2(1, -self.x / self.y)
@@ -49,14 +49,14 @@ class Vector2(object):
         diff = other - self
         rad = atan2(diff.y, diff.x)
         if rad < 0:
-            rad += 2*pi
+            rad += 2 * pi
         return degrees(rad)
 
     def __str__(self) -> str:
         return str(astuple(self))
 
     def __repr__(self) -> str:
-        return f'Vector2 {asdict(self)}'
+        return f"Vector2 {asdict(self)}"
 
 
 Vector2.ZERO = Vector2(0.0, 0.0)

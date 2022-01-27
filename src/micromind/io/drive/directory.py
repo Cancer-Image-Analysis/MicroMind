@@ -5,16 +5,21 @@ import pandas as pd
 from abc import ABC
 from dataclasses import dataclass, field, InitVar
 
-from micromind.io.image import (imread_color, imread_tiff, imread_czi,
-                                imwrite, imwrite_tiff)
+from micromind.io.image import (
+    imread_color,
+    imread_tiff,
+    imread_czi,
+    imwrite,
+    imwrite_tiff,
+)
 
-PNG = '.png'
-JPG = '.jpg'
-CSV = '.csv'
-TIF = '.tif'
-ZIP = '.zip'
-LSM = '.lsm'
-CZI = '.czi'
+PNG = ".png"
+JPG = ".jpg"
+CSV = ".csv"
+TIF = ".tif"
+ZIP = ".zip"
+LSM = ".lsm"
+CZI = ".czi"
 
 
 @dataclass
@@ -37,10 +42,10 @@ class Directory(DriveEntity):
     def __post_init__(self, path):
         super().__post_init__(path)
         if not self.exists():
-            _err = f'The directory {self._path} does not exist!'
+            _err = f"The directory {self._path} does not exist!"
             raise ValueError(_err)
         if not self.is_dir():
-            _err = f'The path {self._path} is not pointing to a directory!'
+            _err = f"The path {self._path} is not pointing to a directory!"
             raise ValueError(_err)
 
     def write(self, filename, filedata):
@@ -55,10 +60,10 @@ class Directory(DriveEntity):
     def read(self, filename):
         filepath = self / filename
         if not filepath.exists():
-            _err = f'The file {filepath} does not exist!'
+            _err = f"The file {filepath} does not exist!"
             raise ValueError(_err)
         if not filepath.is_file():
-            _err = f'The path {filepath} is not pointing to a file!'
+            _err = f"The path {filepath} is not pointing to a file!"
             raise ValueError(_err)
         extension = filepath.suffix
         filepath = str(filepath)
@@ -75,13 +80,13 @@ class Directory(DriveEntity):
         filepath = self / filename
         extension = filepath.suffix
         filepath = str(filepath)
-        unzip_folder = filename.replace(ZIP, '')
+        unzip_folder = filename.replace(ZIP, "")
         new_location = self / unzip_folder
         if new_location.exists():
             return Directory(new_location)
 
         if extension == ZIP:
-            with zipfile.ZipFile(filepath, 'r') as zip_ref:
+            with zipfile.ZipFile(filepath, "r") as zip_ref:
                 zip_ref.extractall(str(new_location))
             return Directory(new_location)
 
@@ -90,7 +95,7 @@ class Directory(DriveEntity):
         filepath.mkdir(parents=True, exist_ok=True)
         return Directory(filepath)
 
-    def ls(self, regex='*'):
+    def ls(self, regex="*"):
         return self.glob(regex)
 
     def save_as_csv(self, data, filename):
@@ -110,6 +115,6 @@ class File(DriveEntity):
     def __init__(self, path):
         super().__init__(path)
         if not self.exists():
-            raise ValueError(f'The file {self} does not exist!')
+            raise ValueError(f"The file {self} does not exist!")
         if not self.is_dir():
-            raise ValueError(f'The path {self} is not pointing to a file!')
+            raise ValueError(f"The path {self} is not pointing to a file!")

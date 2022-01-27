@@ -3,6 +3,7 @@ from micromind.microcell.cell import MicroObject
 
 import cv2
 
+
 class Synapse(MicroObject):
     def __init__(self, cell_1, cell_2, custom_data={}):
         super().__init__(custom_data)
@@ -24,8 +25,8 @@ class Synapse(MicroObject):
     def crop(self, padding=5):
         synapse_mask = self.cell_1.mask | self.cell_2.mask
         x, y, w, h = cv2.boundingRect(synapse_mask)
-        x = max(x-padding, 0)
-        y = max(y-padding, 0)
+        x = max(x - padding, 0)
+        y = max(y - padding, 0)
         w = w + padding * 2
         h = h + padding * 2
         return x, y, w, h
