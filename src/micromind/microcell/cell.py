@@ -3,6 +3,7 @@ import numpy as np
 
 from micromind.cv.image import contours, fill_contours
 from micromind.geometry.vector import Vector2
+import math
 
 
 class MicroObject:
@@ -35,6 +36,14 @@ class Cell2D(Vector2, MicroObject):
         if self.area == 0:
             return None
         return contours(self.mask)
+
+    @property
+    def perimeter(self):
+        return cv2.arcLength(self.boundary[0], True)
+
+    @property
+    def roundness(self):
+        return 4 * math.pi * (self.area / self.perimeter**2)
 
     @property
     def min_x(self):
