@@ -3,25 +3,29 @@ import time
 import cv2
 import numpy as np
 from skimage.segmentation import watershed
+from skimage.feature import peak_local_max
+from scipy import ndimage
 
 
 class WatershedTransform:
-    def __init__(self, backend="skimage"):
+    def __init__(self, backend="skimage", use_dt=False, min_distance=20):
         self._backend = backend
+        self.use_dt = use_dt
+        self.min_distance = min_distance
 
-    def apply(self, mask, markers, image_color=None, use_distance_transform=False):
-        markers[mask == 0] = 0
-        markers = cv2.connectedComponents(markers, connectivity=8)[1]
-
-        if use_distance_transform:
-            mask = cv2.distanceTransform(mask, distanceType=cv2.DIST_L2, maskSize=5)
-
+    def apply(self, mask, markers=None, image_color=None):
         if self._backend == "opencv":
             return self._cv_transform(mask, markers, image_color=image_color)
         elif self._backend == "skimage":
             return self._skimage_transform(mask, markers, image=image_color)
 
     def _cv_transform(self, mask, markers, image_color=None):
+        if self.use_dt:
+            mask = cv2.distanceTransform(mask, distanceType=cv2.DIST_L2, maskSize=5).astype(np.uint8)
+        if markers is None:
+            local_max = peak_local_max(mask, indices=False, min_distance=self.min_distance).astype(np.uint8)
+            markers = cv2.connectedComponents(local_max, connectivity=8)[1]
+
         cv2.imwrite("mask.png", mask * 255)
         if image_color is None:
             image_color = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -44,13 +48,19 @@ class WatershedTransform:
         return labels
 
     def _skimage_transform(self, mask, markers, image=None):
-        if image is None:
-            return watershed(
-                255 - mask, markers=markers, mask=mask > 0, watershed_line=True
-            )
-        return watershed(
-            255 - image, markers=markers, mask=mask > 0, watershed_line=True
-        )
+        if self.use_dt and markers is not None:
+            mask = ndimage.distance_transform_edt(mask)
+        elif self.use_dt and markers is None:
+            mask = ndimage.distance_transform_edt(mask)
+            local_max = peak_local_max(mask, indices=False, min_distance=self.min_distance)
+            markers = ndimage.label(local_max, structure=np.ones((3, 3)))[0]
+        if not self.use_dt and markers is None:
+            local_max = peak_local_max(mask, indices=False, min_distance=self.min_distance)
+            markers = ndimage.label(local_max, structure=np.ones((3, 3)))[0]
+
+        signal = 255 - mask if image is None else 255 - image
+        labels = watershed(signal, markers=markers, mask=mask > 0, watershed_line=True)
+        return mask, markers, labels
 
 
 if __name__ == "__main__":
@@ -66,23 +76,23 @@ if __name__ == "__main__":
     markers[10:20, 10:20] = 255
     cv2.imwrite("markers.png", markers)
 
+    wt_skimage = WatershedTransform(backend="skimage", use_dt=True)
     t0 = time.time()
-    wt_skimage = WatershedTransform(backend="skimage")
-    labels = wt_skimage.apply(mask.copy(), markers)
+    labels = wt_skimage.apply(mask.copy(), markers=markers)
+    t1 = time.time()
     cv2.imwrite(
         "labels_skimage.png",
         cv2.applyColorMap(labels.astype(np.uint8) * 48, cv2.COLORMAP_JET),
     )
 
-    t1 = time.time()
-    wt_opencv = WatershedTransform(backend="opencv")
-    labels = wt_opencv.apply(mask.copy(), markers)
+    wt_opencv = WatershedTransform(backend="opencv", use_dt=True)
+    t2 = time.time()
+    labels = wt_opencv.apply(mask.copy())
+    t3 = time.time()
     cv2.imwrite(
         "labels_opencv.png",
         cv2.applyColorMap(labels.astype(np.uint8) * 48, cv2.COLORMAP_JET),
     )
 
-    t2 = time.time()
-
     print(t1 - t0)
-    print(t2 - t1)
+    print(t3 - t2)
