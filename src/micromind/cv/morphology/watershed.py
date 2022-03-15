@@ -8,6 +8,39 @@ from scipy import ndimage
 
 
 class WatershedTransform:
+    pass
+
+
+class WatershedOpenCV(WatershedTransform):
+    pass
+
+
+class WatershedSkimage(WatershedTransform):
+    def __init__(self, use_dt=False, markers_distance=20):
+        self.use_dt = use_dt
+        self.markers_distance = markers_distance
+
+    def _extract_markers(self, signal):
+        peak_idx = peak_local_max(signal, min_distance=self.markers_distance)
+        peak_mask = np.zeros_like(signal, dtype=np.uint8)
+        peak_mask[tuple(peak_idx.T)] = 1
+        return peak_mask
+
+    def apply(self, signal, markers=None, mask=None):
+        if self.use_dt:
+            signal = ndimage.distance_transform_edt(signal)
+        if markers is None:
+            markers = self._extract_markers(signal)
+
+        markers[mask == 0] = 0
+        markers = cv2.connectedComponents(markers, connectivity=8)[1]
+
+        signal_inv = 255 - signal
+        labels = watershed(signal_inv, markers=markers, mask=mask, watershed_line=True)
+        return mask, markers, labels
+
+
+class WatershedMarkerBased(WatershedTransform):
     def __init__(self, backend="skimage", use_dt=False, min_distance=20):
         self._backend = backend
         self.use_dt = use_dt
@@ -47,20 +80,6 @@ class WatershedTransform:
         labels[labels < 1] = 0
         return labels
 
-    def _skimage_transform(self, mask, markers, image=None):
-        if self.use_dt and markers is not None:
-            mask = ndimage.distance_transform_edt(mask)
-        elif self.use_dt and markers is None:
-            mask = ndimage.distance_transform_edt(mask)
-            local_max = peak_local_max(mask, indices=False, min_distance=self.min_distance)
-            markers = ndimage.label(local_max, structure=np.ones((3, 3)))[0]
-        if not self.use_dt and markers is None:
-            local_max = peak_local_max(mask, indices=False, min_distance=self.min_distance)
-            markers = ndimage.label(local_max, structure=np.ones((3, 3)))[0]
-
-        signal = 255 - mask if image is None else 255 - image
-        labels = watershed(signal, markers=markers, mask=mask > 0, watershed_line=True)
-        return mask, markers, labels
 
 
 if __name__ == "__main__":
@@ -78,7 +97,7 @@ if __name__ == "__main__":
 
     wt_skimage = WatershedTransform(backend="skimage", use_dt=True)
     t0 = time.time()
-    labels = wt_skimage.apply(mask.copy(), markers=markers)
+    mask, markers, labels = wt_skimage.apply(mask.copy(), markers=markers)
     t1 = time.time()
     cv2.imwrite(
         "labels_skimage.png",
@@ -87,7 +106,7 @@ if __name__ == "__main__":
 
     wt_opencv = WatershedTransform(backend="opencv", use_dt=True)
     t2 = time.time()
-    labels = wt_opencv.apply(mask.copy())
+    mask, markers, labels = wt_opencv.apply(mask.copy())
     t3 = time.time()
     cv2.imwrite(
         "labels_opencv.png",
