@@ -37,7 +37,7 @@ class WatershedSkimage(WatershedTransform):
 
         signal_inv = 255 - signal
         labels = watershed(signal_inv, markers=markers, mask=mask, watershed_line=True)
-        return mask, markers, labels
+        return signal, markers, labels
 
 
 class WatershedMarkerBased(WatershedTransform):
@@ -79,39 +79,3 @@ class WatershedMarkerBased(WatershedTransform):
         labels = labels - 1
         labels[labels < 1] = 0
         return labels
-
-
-
-if __name__ == "__main__":
-    mask = np.zeros((256, 256), dtype=np.uint8)
-    mask[64:128, 64:128] = 255
-    mask[128:192, 128:192] = 255
-    cv2.imwrite("mask.png", mask)
-
-    markers = np.zeros((256, 256), dtype=np.uint8)
-    markers[70:80, 70:80] = 255
-    markers[164:180, 164:180] = 255
-    markers[110:120, 110:120] = 255
-    markers[10:20, 10:20] = 255
-    cv2.imwrite("markers.png", markers)
-
-    wt_skimage = WatershedTransform(backend="skimage", use_dt=True)
-    t0 = time.time()
-    mask, markers, labels = wt_skimage.apply(mask.copy(), markers=markers)
-    t1 = time.time()
-    cv2.imwrite(
-        "labels_skimage.png",
-        cv2.applyColorMap(labels.astype(np.uint8) * 48, cv2.COLORMAP_JET),
-    )
-
-    wt_opencv = WatershedTransform(backend="opencv", use_dt=True)
-    t2 = time.time()
-    mask, markers, labels = wt_opencv.apply(mask.copy())
-    t3 = time.time()
-    cv2.imwrite(
-        "labels_opencv.png",
-        cv2.applyColorMap(labels.astype(np.uint8) * 48, cv2.COLORMAP_JET),
-    )
-
-    print(t1 - t0)
-    print(t3 - t2)
