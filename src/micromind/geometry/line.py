@@ -31,6 +31,9 @@ class Line2:
         point_2 = point + Vector2(cos(angle_rad), sin(angle_rad)) * size
         return Line2(point_1, point_2)
 
+    def as_int_tuple(self):
+        return self.pt1.as_int_tuple(), self.pt2.as_int_tuple()
+
 
 Line2.ZERO = Line2(Vector2.ZERO, Vector2.ZERO)
 Line2.UP = Line2(Vector2.ZERO, Vector2.UP)

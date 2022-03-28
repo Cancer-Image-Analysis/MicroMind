@@ -44,7 +44,7 @@ class Vector2(object):
         return (self.x, self.y)
 
     def as_int_tuple(self) -> Tuple[int, int]:
-        return (int(round(self.x)), int(round(self.y)))
+        return int(round(self.x)), int(round(self.y))
 
     def angle_with_x_axis(self, other: Vector2) -> float:
         diff = other - self

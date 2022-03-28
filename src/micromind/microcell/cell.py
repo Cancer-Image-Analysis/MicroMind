@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 
-from micromind.cv.image import contours, fill_contours
+from micromind.cv.image import contours, fill_contours, split_mask_with_lines
+from micromind.geometry.line import Line2
 from micromind.geometry.vector import Vector2
 import math
 
@@ -76,3 +77,34 @@ class Cell2D(Vector2, MicroObject):
                 else:
                     return Cell2D(cell_name, mask, cx, cy, custom_data=custom_data)
         return None
+
+
+HOURGLASS_ORIENTATION = 45
+HOURGLASS_ANGLES = np.array([0, 90, 180, 270]) - HOURGLASS_ORIENTATION
+
+
+class CellHourglass(Cell2D):
+    def __init__(self, cell_name, cell_mask, x, y, angle, custom_data={}):
+        super().__init__(cell_name, cell_mask, x, y, custom_data)
+        angles = np.radians(angle - HOURGLASS_ANGLES)
+
+        coss = np.cos(angles)
+        sins = np.sin(angles)
+
+        A = self + Vector2(coss[0], sins[0]) * 500
+        B = self + Vector2(coss[1], sins[1]) * 500
+        C = self + Vector2(coss[2], sins[2]) * 500
+        D = self + Vector2(coss[3], sins[3]) * 500
+        front_point = (A + B) * 0.5
+
+        AC = Line2(A, C)
+        BD = Line2(B, D)
+
+        submasks, centroids = split_mask_with_lines(self.mask, [AC, BD])
+        distances = np.array([c.distance(front_point) for c in centroids])
+        ordered_indices = np.argsort(distances)
+
+        self.front = submasks[ordered_indices[0]]
+        self.side1 = submasks[ordered_indices[1]]
+        self.side2 = submasks[ordered_indices[2]]
+        self.rear = submasks[ordered_indices[3]]
