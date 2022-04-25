@@ -7,9 +7,12 @@ from micromind.geometry.vector import Vector2
 import math
 
 
-class MicroObject:
-    def __init__(self, custom_data={}):
+class MicroEntity:
+    def __init__(self, name, custom_data=None):
+        self.name = name
         self.custom_data = custom_data
+        if self.custom_data is None:
+            self.custom_data = {}
 
     def set_data(self, data_name, data):
         self.custom_data[data_name] = data
@@ -18,15 +21,17 @@ class MicroObject:
         return self.custom_data[data_name]
 
 
-class Cell2D(Vector2, MicroObject):
-    def __init__(self, cell_name, cell_mask, x, y, custom_data={}):
+class MicroEntity2D(Vector2, MicroEntity):
+    def __init__(self, name, mask, x, y, custom_data=None):
+        MicroEntity.__init__(self, name, custom_data=custom_data)
         Vector2.__init__(self, x, y)
-        MicroObject.__init__(self, custom_data=custom_data)
-        self.name = cell_name
-        self.mask = cell_mask
+        self.mask = mask
 
     def get_mean(self, channel):
         return np.mean(channel, where=self.mask > 0)
+
+    def get_max(self, channel):
+        return np.max(channel, where=self.mask > 0, initial=0)
 
     @property
     def area(self):
@@ -53,6 +58,15 @@ class Cell2D(Vector2, MicroObject):
     @property
     def max_x(self):
         return np.max(self.boundary[0], axis=0)[0, 0]
+
+
+class Particle2D(MicroEntity2D):
+    pass
+
+
+class Cell2D(MicroEntity2D):
+    def __init__(self, name, mask, x, y, custom_data=None):
+        super().__init__(name, mask, x, y, custom_data)
 
     @staticmethod
     def from_mask(cell_mask, cell_name, area_range=None, custom_data={}):

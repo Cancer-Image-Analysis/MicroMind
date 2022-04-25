@@ -1,12 +1,12 @@
 import cv2
 
 from micromind.cv.image import intersection_with_line
-from micromind.microcell.cell import MicroObject
+from micromind.microcell.cell import MicroEntity
 
 
-class Synapse(MicroObject):
-    def __init__(self, cell_1, cell_2, custom_data={}):
-        super().__init__(custom_data)
+class Synapse(MicroEntity):
+    def __init__(self, cell_1, cell_2, custom_data=None):
+        super().__init__(f"{cell_1.name}-{cell_2.name}", custom_data)
         self.cell_1 = cell_1
         self.cell_2 = cell_2
 
