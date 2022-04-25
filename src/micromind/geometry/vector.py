@@ -6,7 +6,7 @@ from typing import ClassVar, Tuple
 
 
 @dataclass
-class Vector2(object):
+class Vector2:
     x: float
     y: float
     ZERO: ClassVar[Vector2]
@@ -41,7 +41,7 @@ class Vector2(object):
         return Vector2(1, -self.x / self.y)
 
     def as_tuple(self) -> Tuple[float, float]:
-        return (self.x, self.y)
+        return self.x, self.y
 
     def as_int_tuple(self) -> Tuple[int, int]:
         return int(round(self.x)), int(round(self.y))
