@@ -16,7 +16,7 @@ class WatershedOpenCV(WatershedTransform):
 
 
 class WatershedSkimage(WatershedTransform):
-    def __init__(self, use_dt=False, markers_distance=20):
+    def __init__(self, use_dt=False, markers_distance=21):
         self.use_dt = use_dt
         self.markers_distance = markers_distance
 
@@ -30,9 +30,12 @@ class WatershedSkimage(WatershedTransform):
         if self.use_dt:
             signal = ndimage.distance_transform_edt(signal)
         if markers is None:
+            # smooth before getting local_max
+            if not self.use_dt:
+                signal = cv2.GaussianBlur(signal, (5, 5), 0)
             markers = self._extract_markers(signal)
 
-        markers[mask == 0] = 0
+        # markers[mask == 0] = 0
         markers = cv2.connectedComponents(markers, connectivity=8)[1]
 
         signal_inv = 255 - signal
