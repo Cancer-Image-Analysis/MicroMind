@@ -3,7 +3,7 @@ import numpy as np
 
 from micromind.geometry.vector import Vector2
 
-BINARY_FILL_COLOR = 255
+BINARY_DEFAULT_VALUE = 255
 
 
 def imnew(shape, dtype=np.uint8):
@@ -32,7 +32,7 @@ def draw_contours(image, cnts, thickness=2, color=[0, 255, 255], cnt_index=-1):
 
 def imfill(image):
     cnts = contours(image, exclude_holes=True)
-    return fill_contours(image, cnts, color=BINARY_FILL_COLOR)
+    return fill_contours(image, cnts, color=BINARY_DEFAULT_VALUE)
 
 
 def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color="same"):
@@ -48,7 +48,7 @@ def overlay(image, mask, color=[255, 255, 0], alpha=0.4, border_color="same"):
     return overlayed
 
 
-def fill_ellipses(mask, ellipses, color=BINARY_FILL_COLOR):
+def fill_ellipses(mask, ellipses, color=BINARY_DEFAULT_VALUE):
     for ellipse in ellipses:
         cv2.ellipse(mask, ellipse, color, thickness=-1)
     return mask
@@ -60,7 +60,7 @@ def fill_ellipses_as_labels(mask, ellipses):
     return mask
 
 
-def fill_polygons(mask, polygons, color=BINARY_FILL_COLOR):
+def fill_polygons(mask, polygons, color=BINARY_DEFAULT_VALUE):
     return cv2.fillPoly(mask, pts=polygons, color=color)
 
 
@@ -111,7 +111,7 @@ def split_mask_with_lines(mask, lines):
             line_mask,
             line.pt1.as_int_tuple(),
             line.pt2.as_int_tuple(),
-            BINARY_FILL_COLOR,
+            BINARY_DEFAULT_VALUE,
             2,
         )
     splitted_mask = cv2.bitwise_and(mask, cv2.bitwise_not(line_mask))
@@ -135,10 +135,10 @@ def split_mask_with_lines(mask, lines):
 
 def intersection_with_line(mask, line):
     line_mask = imnew(mask.shape)
-    line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
+    line_mask = cv2.line(line_mask, line[0], line[1], BINARY_DEFAULT_VALUE, 2)
     cnts = contours(mask)
     mask_cnt = imnew(mask.shape)
-    cv2.drawContours(mask_cnt, cnts, -1, BINARY_FILL_COLOR, 2)
+    cv2.drawContours(mask_cnt, cnts, -1, BINARY_DEFAULT_VALUE, 2)
     intersection = cv2.bitwise_and(line_mask, mask_cnt)
     centroid = np.mean(np.argwhere(intersection), axis=0)
     return centroid
@@ -152,7 +152,7 @@ def mean_over_line(image, line, thickness=2):
 
 def max_over_line(image, line):
     line_mask = imnew(image.shape)
-    line_mask = cv2.line(line_mask, line[0], line[1], BINARY_FILL_COLOR, 2)
+    line_mask = cv2.line(line_mask, line[0], line[1], BINARY_DEFAULT_VALUE, 2)
     return max_in_mask(image, line_mask)
 
 
