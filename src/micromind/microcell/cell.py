@@ -30,6 +30,9 @@ class MicroEntity2D(Vector2, MicroEntity):
     def get_mean(self, channel):
         return np.mean(channel, where=self.mask > 0)
 
+    def get_sum(self, channel):
+        return np.sum(channel, where=self.mask > 0)
+
     def get_max(self, channel):
         return np.max(channel, where=self.mask > 0, initial=0)
 
