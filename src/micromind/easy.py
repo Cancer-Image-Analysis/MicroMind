@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+
 from micromind.cv.image import contours, fill_contours
 from micromind.microcell.cell import Particle2D
 

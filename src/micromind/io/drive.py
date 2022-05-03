@@ -1,15 +1,16 @@
 import zipfile
 from abc import ABC
-from dataclasses import dataclass, InitVar, field
+from dataclasses import InitVar, dataclass, field
 from pathlib import Path
 
 import pandas as pd
+
 from micromind.io.image import (
+    imread_color,
+    imread_czi,
+    imread_tiff,
     imwrite,
     imwrite_tiff,
-    imread_color,
-    imread_tiff,
-    imread_czi,
 )
 
 EXTENSION_IMAGE_PNG = ".png"

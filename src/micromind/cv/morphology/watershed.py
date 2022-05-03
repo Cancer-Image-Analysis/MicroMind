@@ -2,9 +2,9 @@ import time
 
 import cv2
 import numpy as np
-from skimage.segmentation import watershed
-from skimage.feature import peak_local_max
 from scipy import ndimage
+from skimage.feature import peak_local_max
+from skimage.segmentation import watershed
 
 
 class WatershedTransform:

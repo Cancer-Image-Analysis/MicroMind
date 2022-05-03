@@ -1,7 +1,8 @@
-import matplotlib.pyplot as plt
-from matplotlib import rc
-import numpy as np
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import rc
+
 from micromind.cv.image import contours, draw_contours
 
 rc("font", **{"size": 6})

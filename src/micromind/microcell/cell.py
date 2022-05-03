@@ -1,10 +1,11 @@
+import math
+
 import cv2
 import numpy as np
 
 from micromind.cv.image import contours, fill_contours, split_mask_with_lines
 from micromind.geometry.line import Line2
 from micromind.geometry.vector import Vector2
-import math
 
 
 class MicroEntity:
