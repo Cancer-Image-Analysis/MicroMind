@@ -1,25 +1,18 @@
 import zipfile
 from abc import ABC
-from dataclasses import InitVar, dataclass, field
+from dataclasses import dataclass, InitVar, field
 from pathlib import Path
 
 import pandas as pd
+from micromind.io.image import imwrite, imwrite_tiff, imread_color, imread_tiff, imread_czi
 
-from micromind.io.image import (
-    imread_color,
-    imread_czi,
-    imread_tiff,
-    imwrite,
-    imwrite_tiff,
-)
-
-PNG = ".png"
-JPG = ".jpg"
+EXTENSION_IMAGE_PNG = ".png"
+EXTENSION_IMAGE_JPG = ".jpg"
 CSV = ".csv"
-TIF = ".tif"
+EXTENSION_IMAGE_TIF = ".tif"
 ZIP = ".zip"
-LSM = ".lsm"
-CZI = ".czi"
+EXTENSION_IMAGE_LSM = ".lsm"
+EXTENSION_IMAGE_CZI = ".czi"
 
 
 @dataclass
@@ -52,9 +45,9 @@ class Directory(DriveEntity):
         filepath = self / filename
         extension = filepath.suffix
         filepath = str(filepath)
-        if extension == PNG:
+        if extension == EXTENSION_IMAGE_PNG:
             imwrite(filepath, filedata)
-        if extension == TIF or extension == LSM:
+        if extension == EXTENSION_IMAGE_TIF or extension == EXTENSION_IMAGE_LSM:
             imwrite_tiff(filepath, filedata)
 
     def read(self, filename):
@@ -67,13 +60,13 @@ class Directory(DriveEntity):
             raise ValueError(_err)
         extension = filepath.suffix
         filepath = str(filepath)
-        if extension == PNG or extension == JPG:
+        if extension == EXTENSION_IMAGE_PNG or extension == EXTENSION_IMAGE_JPG:
             return imread_color(filepath)
         if extension == CSV:
             return pd.read_csv(filepath)
-        if extension == TIF or extension == LSM:
+        if extension == EXTENSION_IMAGE_TIF or extension == EXTENSION_IMAGE_LSM:
             return imread_tiff(filepath)
-        if extension == CZI:
+        if extension == EXTENSION_IMAGE_CZI:
             return imread_czi(filepath)
 
     def unzip(self, filename):
@@ -105,16 +98,3 @@ class Directory(DriveEntity):
         elif isinstance(data, pd.DataFrame):
             df = data
         df.to_csv(str(filepath))
-
-
-class WorkingDirectory(Directory):
-    pass
-
-
-class File(DriveEntity):
-    def __init__(self, path):
-        super().__init__(path)
-        if not self.exists():
-            raise ValueError(f"The file {self} does not exist!")
-        if not self.is_dir():
-            raise ValueError(f"The path {self} is not pointing to a file!")
