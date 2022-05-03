@@ -7,7 +7,9 @@ from micromind.cv.image import contours, draw_contours
 rc("font", **{"size": 6})
 
 
-def plot_predictions(original, prediction, contours_color=[255, 255, 0], only_centroid=False):
+def plot_predictions(
+    original, prediction, contours_color=[255, 255, 0], only_centroid=False
+):
     fig = plt.figure(figsize=(6, 18), dpi=300)
 
     ax = fig.add_subplot(1, 3, 1)
@@ -30,7 +32,9 @@ def plot_predictions(original, prediction, contours_color=[255, 255, 0], only_ce
             centroid_x = cnt_x.mean()
             print(centroid_x)
             centroid_y = cnt_y.mean()
-            cv2.circle(borders, (int(centroid_x), int(centroid_y)), 10, contours_color, -1)
+            cv2.circle(
+                borders, (int(centroid_x), int(centroid_y)), 10, contours_color, -1
+            )
         ax = fig.add_subplot(1, 3, 3)
         ax.imshow(borders)
         ax.set_title("markers")

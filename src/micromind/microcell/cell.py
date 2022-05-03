@@ -52,7 +52,7 @@ class MicroEntity2D(Vector2, MicroEntity):
 
     @property
     def roundness(self):
-        return 4 * math.pi * (self.area / self.perimeter**2)
+        return 4 * math.pi * (self.area / self.perimeter ** 2)
 
     @property
     def min_x(self):

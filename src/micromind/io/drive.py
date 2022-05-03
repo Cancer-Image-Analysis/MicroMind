@@ -4,7 +4,13 @@ from dataclasses import dataclass, InitVar, field
 from pathlib import Path
 
 import pandas as pd
-from micromind.io.image import imwrite, imwrite_tiff, imread_color, imread_tiff, imread_czi
+from micromind.io.image import (
+    imwrite,
+    imwrite_tiff,
+    imread_color,
+    imread_tiff,
+    imread_czi,
+)
 
 EXTENSION_IMAGE_PNG = ".png"
 EXTENSION_IMAGE_JPG = ".jpg"

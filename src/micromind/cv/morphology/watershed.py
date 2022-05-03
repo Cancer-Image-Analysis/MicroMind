@@ -57,9 +57,13 @@ class WatershedMarkerBased(WatershedTransform):
 
     def _cv_transform(self, mask, markers, image_color=None):
         if self.use_dt:
-            mask = cv2.distanceTransform(mask, distanceType=cv2.DIST_L2, maskSize=5).astype(np.uint8)
+            mask = cv2.distanceTransform(
+                mask, distanceType=cv2.DIST_L2, maskSize=5
+            ).astype(np.uint8)
         if markers is None:
-            local_max = peak_local_max(mask, indices=False, min_distance=self.min_distance).astype(np.uint8)
+            local_max = peak_local_max(
+                mask, indices=False, min_distance=self.min_distance
+            ).astype(np.uint8)
             markers = cv2.connectedComponents(local_max, connectivity=8)[1]
 
         cv2.imwrite("mask.png", mask * 255)
