@@ -16,9 +16,10 @@ class WatershedOpenCV(WatershedTransform):
 
 
 class WatershedSkimage(WatershedTransform):
-    def __init__(self, use_dt=False, markers_distance=21):
+    def __init__(self, use_dt=False, markers_distance=21, markers_area=None):
         self.use_dt = use_dt
         self.markers_distance = markers_distance
+        self.markers_area = markers_area
 
     def _extract_markers(self, signal):
         peak_idx = peak_local_max(signal, min_distance=self.markers_distance)
@@ -36,11 +37,19 @@ class WatershedSkimage(WatershedTransform):
             markers = self._extract_markers(signal)
 
         # markers[mask == 0] = 0
-        markers = cv2.connectedComponents(markers, connectivity=8)[1]
+        if self.markers_area:
+            n, marker_labels, stats, _ = cv2.connectedComponentsWithStats(markers, connectivity=8)
+            for i in range(1, n):
+                if self.markers_area[0] < stats[i, cv2.CC_STAT_AREA] < self.markers_area[1]:
+                    pass
+                else:
+                    marker_labels[marker_labels == i] = 0
+        else:
+            marker_labels = cv2.connectedComponents(markers, connectivity=8)[1]
 
         signal_inv = 255 - signal
-        labels = watershed(signal_inv, markers=markers, mask=mask, watershed_line=True)
-        return signal, markers, labels
+        labels = watershed(signal_inv, markers=marker_labels, mask=mask, watershed_line=True)
+        return signal, marker_labels, labels
 
 
 class WatershedMarkerBased(WatershedTransform):
