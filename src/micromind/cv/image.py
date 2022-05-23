@@ -6,15 +6,15 @@ from micromind.geometry.vector import Vector2
 BINARY_DEFAULT_VALUE = 255
 
 
-def image_mean(image_1, image_2):
+def image_ew_mean(image_1, image_2):
     return cv2.addWeighted(image_1, 0.5, image_2, 0.5, 0)
 
 
-def image_max(image_1, image_2):
+def image_ew_max(image_1, image_2):
     return cv2.max(image_1, image_2)
 
 
-def image_min(image_1, image_2):
+def image_ew_min(image_1, image_2):
     return cv2.min(image_1, image_2)
 
 
@@ -25,10 +25,7 @@ def image_normalize(image):
 def image_new(shape, dtype=np.uint8):
     return np.zeros(shape=shape, dtype=dtype)
 
-def image_erode(image, half_kernel_size=1):
-    kernel_size = half_kernel_size * 2 + 1
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
-    return cv2.erode(image, kernel)
+
 def image_like(image):
     return np.zeros_like(image)
 
