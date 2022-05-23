@@ -3,7 +3,7 @@ import math
 import cv2
 import numpy as np
 
-from micromind.cv.image import contours, fill_contours, split_mask_with_lines
+from micromind.cv.image import image_contours, fill_contours, split_mask_with_lines
 from micromind.geometry.line import Line2
 from micromind.geometry.vector import Vector2
 
@@ -45,7 +45,7 @@ class MicroEntity2D(Vector2, MicroEntity):
     def boundary(self):
         if self.area == 0:
             return None
-        return contours(self.mask)
+        return image_contours(self.mask)
 
     @property
     def perimeter(self):
@@ -75,7 +75,7 @@ class Cell2D(MicroEntity2D):
     @staticmethod
     def from_mask(cell_mask, cell_name, area_range=None, custom_data={}):
         mask = np.zeros(cell_mask.shape, dtype=np.uint8)
-        cnts = contours(cell_mask)
+        cnts = image_contours(cell_mask)
         if len(cnts) == 1:
             cnt = cnts[0]
             if len(cnt) >= 4:

@@ -1,13 +1,13 @@
 import cv2
 import numpy as np
 
-from micromind.cv.image import contours, fill_contours
+from micromind.cv.image import image_contours, fill_contours
 from micromind.microcell.cell import Particle2D
 
 
 def __create_entity(mask):
     mask_bin = np.zeros_like(mask, dtype=np.uint8)
-    cnts = contours(mask)
+    cnts = image_contours(mask)
     if len(cnts) != 1:
         raise ValueError(f"Can't create entity with ambiguous mask!")
     cnt = cnts[0]

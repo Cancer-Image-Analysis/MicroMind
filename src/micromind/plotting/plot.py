@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rc
 
-from micromind.cv.image import contours, draw_contours
+from micromind.cv.image import image_contours, draw_contours
 
 rc("font", **{"size": 6})
 
@@ -24,7 +24,7 @@ def plot_predictions(
     ax.axis("off")
 
     borders = original.copy()
-    cnts = contours(prediction)
+    cnts = image_contours(prediction)
     if only_centroid:
         for cnt in cnts:
             cnt_x = cnt[:, 0, 0]
