@@ -46,9 +46,9 @@ class WatershedSkimage(WatershedTransform):
         return signal, marker_labels, labels
 
 
-def get_kernel(struct_shape="ellipse", half_kernel_size=1):
+def get_kernel(struct_shape="circle", half_kernel_size=1):
     kernel_size = half_kernel_size * 2 + 1
-    if struct_shape == "ellipse":
+    if struct_shape == "circle":
         return cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_size, kernel_size))
     elif struct_shape == "square":
         return cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
@@ -56,11 +56,11 @@ def get_kernel(struct_shape="ellipse", half_kernel_size=1):
         return cv2.getStructuringElement(cv2.MORPH_CROSS, (kernel_size, kernel_size))
 
 
-def image_erode(image, struct_shape="ellipse", half_kernel_size=1):
+def image_erode(image, struct_shape="circle", half_kernel_size=1):
     kernel = get_kernel(struct_shape=struct_shape, half_kernel_size=half_kernel_size)
     return cv2.erode(image, kernel)
 
 
-def image_dilate(image, struct_shape="ellipse", half_kernel_size=1):
+def image_dilate(image, struct_shape="circle", half_kernel_size=1):
     kernel = get_kernel(struct_shape=struct_shape, half_kernel_size=half_kernel_size)
     return cv2.dilate(image, kernel)

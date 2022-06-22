@@ -126,3 +126,18 @@ class CellHourglass(Cell2D):
         self.side1 = submasks[ordered_indices[1]]
         self.side2 = submasks[ordered_indices[2]]
         self.rear = submasks[ordered_indices[3]]
+
+
+class MicroPopulation:
+    def __init__(self):
+        self.entities = []
+
+
+class MicroPopulationSet:
+    def __init__(self):
+        self.populations = {}
+
+
+class MicroPopulationBulk:
+    def __init__(self):
+        self.population = MicroPopulation()

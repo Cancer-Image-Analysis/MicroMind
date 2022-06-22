@@ -23,6 +23,13 @@ class Figure:
         self.__fig.subplots_adjust(hspace=self.hspace)
         self.panels = self.panels.ravel()
 
+    def set_panel(self, n, title, image, cmap=None, hide_axis=True):
+        panel = self.get_panel(n)
+        panel.set_title(title)
+        if hide_axis:
+            panel.axis("off")
+        panel.imshow(image, cmap=cmap)
+
     def get_panel(self, n):
         return self.panels[n]
 
